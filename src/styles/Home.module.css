@@ -1,20 +1,8 @@
-.header {
-  width: 90%;
-  margin: 0 auto;
-  margin-top: 2em;
-  margin-bottom: 7em;
-  font-size: 1rem;
-  display: flex;
-  gap: .4em;
-  align-items: center;
-}
-
 .container { 
-  width: 90%;
-  margin: 0 auto;
   display: flex;
   align-items: center;
   gap: 1em;
+  margin-top: 7em;
 }
 
 .image_container {
@@ -33,8 +21,8 @@
 .tagline {
   font-weight: 600;
   font-family: 'Poppins', sans-serif;
-  line-height: 1.3em;
   font-size: 3rem;
+  line-height: 1.3em;
   margin-bottom: .4em;
   color: var(--primary-color-1);
 }

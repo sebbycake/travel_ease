@@ -1,0 +1,12 @@
+.layout_container {
+  width: 90%;
+  margin: 0 auto;
+}
+
+.header {
+  margin-top: 2em;
+  font-size: 1rem;
+  display: flex;
+  gap: .4em;
+  align-items: center;
+}

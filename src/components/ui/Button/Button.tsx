@@ -1,11 +1,13 @@
+import Link from "next/link";
 import styles from "./Button.module.css"
 
 interface ButtonProps {
   label: string;
+  href: string;
 }
 
-export default function Button({ label }: ButtonProps): JSX.Element {
-  return <button className={styles.button}>
-    { label }
-  </button>
-}
+export default function Button({ label, href }: ButtonProps): JSX.Element {
+  return <Link className={styles.button} href={href}>
+    {label}
+  </Link>
+} 

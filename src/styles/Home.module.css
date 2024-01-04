@@ -6,7 +6,7 @@
 }
 
 .image_container {
-  flex-basis: 60%;
+  flex-basis: 50%;
 }
 
 .landing_page_img {
@@ -15,7 +15,7 @@
 }
 
 .description {
-  flex-basis: 40%;
+  flex-basis: 50%;
 }
 
 .tagline {
@@ -30,12 +30,13 @@
 .explanation {
   font-weight: 400;
   font-size: 1.2rem;
-  margin-bottom: 1em;
+  margin-bottom: 1.5em;
   line-height: 1.5em;
 }
 
 @media only screen and (max-width: 600px) {
   .container {
-    flex-direction: column;
+    flex-direction: column-reverse;
+    gap: 2em;
   }
 }

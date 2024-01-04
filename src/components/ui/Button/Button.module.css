@@ -6,4 +6,6 @@
   cursor: pointer;
   background-color: var(--primary-color-1);
   color: #fff;
+  text-decoration: none;
+  text-align: center;
 }

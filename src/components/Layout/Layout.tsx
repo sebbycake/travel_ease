@@ -1,4 +1,5 @@
 import styles from "./Layout.module.css"
+import { Text } from '@chakra-ui/react'
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ export default function Layout({ children }: LayoutProps): JSX.Element {
         src="/undraw_arrow.svg"
         alt="logo"
       />
-      <h1>TravelEase</h1>
+      <Text fontSize='2xl'>TravelEase</Text>
     </nav>
     {children}
   </div>

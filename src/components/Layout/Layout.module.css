@@ -1,5 +1,5 @@
 .layout_container {
-  width: 80%;
+  width: 55%;
   margin: 0 auto;
 }
 
@@ -9,4 +9,10 @@
   display: flex;
   gap: .4em;
   align-items: center;
+}
+
+@media (max-width: 480px) {
+  .layout_container {
+    width: 90%;
+  }
 }

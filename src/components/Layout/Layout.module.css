@@ -1,5 +1,5 @@
 .layout_container {
-  width: 55%;
+  width: 70%;
   margin: 0 auto;
 }
 
@@ -14,5 +14,11 @@
 @media (max-width: 480px) {
   .layout_container {
     width: 90%;
+  }
+}
+
+@media (min-width: 1500px) {
+  .layout_container {
+    width: 55%;
   }
 }

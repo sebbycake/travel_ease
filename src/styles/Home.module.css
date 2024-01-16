@@ -34,9 +34,37 @@
   line-height: 1.5em;
 }
 
+.support_title {
+  color: var(--primary-color-1);
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-top: 3em;
+  text-align: center;
+}
+
+.partner_img_container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 1em;
+}
+
+.partner_img {
+  width: 190px;
+  max-width: 100%;
+}
+
 @media only screen and (max-width: 600px) {
   .container {
     flex-direction: column-reverse;
     gap: 2em;
+  }
+  .partner_img_container {
+    flex-direction: column;
+    gap: 2em;
+  }
+  .partner_img {
+    width: 180px;
+    max-width: 100%;
   }
 }

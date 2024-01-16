@@ -20,26 +20,10 @@ type SearchParamsType = {
 export default function Form(): JSX.Element {
 
   const [searchParams, setSearchParams] = useState<SearchParamsType>({
-    s1: "",
-    s2: "",
-    s3: "",
-    s4: "",
-    s5: "",
-    s6: "",
-    s7: "",
-    s8: "",
-    s9: "",
-    s10: "",
-    d1: "",
-    d2: "",
-    d3: "",
-    d4: "",
-    d5: "",
-    d6: "",
-    d7: "",
-    d8: "",
-    d9: "",
-    d10: ""
+    s1: "", s2: "", s3: "", s4: "", s5: "",
+    s6: "", s7: "", s8: "", s9: "", s10: "",
+    d1: "", d2: "", d3: "", d4: "", d5: "",
+    d6: "", d7: "", d8: "", d9: "", d10: ""
   })
   const SRC_KEYS: Array<keyof typeof searchParams> = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10"]
   const DEST_KEYS: Array<keyof typeof searchParams> = ["d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10"]
@@ -83,7 +67,7 @@ export default function Form(): JSX.Element {
           SRC_KEYS.map((key, index) => <Input
             key={key}
             isRequired={index === 0}
-            placeholder={`Name of address of source ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
+            placeholder={`Enter location of source ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
             value={searchParams[key]}
             focusBorderColor='black'
             onChange={(event) => handleChange(event, key)}
@@ -104,7 +88,7 @@ export default function Form(): JSX.Element {
           DEST_KEYS.map((key, index) => <Input
             key={key}
             isRequired={index === 0}
-            placeholder={`Name of address of destination ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
+            placeholder={`Enter location of destination ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
             value={searchParams[key]}
             focusBorderColor='black'
             onChange={(event) => handleChange(event, key)}

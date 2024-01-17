@@ -13,7 +13,7 @@ from "@googlemaps/google-maps-services-js"
 
 // [origin, averageDistance, averageDuration]
 export type DistanceRankingResult = [string, LatLngLiteral, number, number];
-interface Results {
+export interface Results {
   ranking: DistanceRankingResult[];
   destination_geocode: LatLngLiteral[];
 }
@@ -76,9 +76,9 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
 
-  const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
-  console.log(req.body)
-  const [src, dest] = getOriginsAndDestinations(query)
+  // const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
+  // console.log(req.body)
+  const [src, dest] = getOriginsAndDestinations(req.body.addresses)
 
   console.log(src)
   console.log(dest)
@@ -98,7 +98,6 @@ export default async function handler(
 
   try {
     const response = await client.distancematrix(params_)
-    console.log(response)
     const data = response.data
     const originAddresses = data.origin_addresses
     const origins = data.rows
@@ -113,6 +112,9 @@ export default async function handler(
       const destGeoCode = await getGeocodeLocation(dest)
       destination_addresses_geocode.push(destGeoCode)
     }
+
+    console.log(results)
+    console.log(destination_addresses_geocode)
 
     res.status(200).json({
       data: { 

@@ -7,13 +7,13 @@ import {
   TravelMode,
   TransitMode
 }
-  from "@googlemaps/google-maps-services-js"
+from "@googlemaps/google-maps-services-js"
 
 // [origin, averageDistance, averageDuration]
-type DistanceRankingResult = Array<[string, number, number]>;
+export type DistanceRankingResult = [string, number, number];
 
 type Data = {
-  data?: DistanceRankingResult;
+  data?: DistanceRankingResult[];
   name?: string;
   error?: string;
 }
@@ -74,7 +74,7 @@ export default async function handler(
     }
   }
 
-  const results: DistanceRankingResult = []
+  const results: DistanceRankingResult[] = []
 
   try {
     const response = await client.distancematrix(params_)

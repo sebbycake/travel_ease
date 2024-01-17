@@ -1,23 +1,12 @@
-import Head from 'next/head'
+import MetaHeader from "@/components/ui/MetaHeader/MetaHeader"
 import styles from "../styles/Home.module.css"
 import Button from '@/components/ui/Button/Button'
 import Layout from '@/components/Layout/Layout'
-import {
-  Input,
-  SimpleGrid,
-}
-  from '@chakra-ui/react'
-
 
 export default function Home() {
   return (
     <>
-      <Head>
-        <title>TravelEase</title>
-        <meta name="description" content="Optimize your stay for your next trip with TravelEase" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <MetaHeader />
       <Layout>
         <div className={styles.container}>
 

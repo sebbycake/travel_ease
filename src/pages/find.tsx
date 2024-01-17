@@ -1,4 +1,4 @@
-import Head from 'next/head'
+import MetaHeader from "@/components/ui/MetaHeader/MetaHeader"
 import styles from "../styles/Find.module.css"
 import Layout from '@/components/Layout/Layout'
 import {
@@ -14,12 +14,7 @@ export default function Find() {
 
   return (
     <>
-      <Head>
-        <title>TravelEase | Find </title>
-        <meta name="description" content="Optimize your stay for your next trip with TravelEase" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <MetaHeader />
       <Layout>
         <div className={styles.container}>
           <Stack spacing={4}>
@@ -31,7 +26,7 @@ export default function Find() {
               tailored to your chosen mode of transport.
               Make informed decisions and enjoy a more convenient journey with TravelEase.
             </Text>
-            <Text>
+            <Text>``
               To start, copy the names or addresses of your accommodations and places of attractions
               you have researched below.
               Then, hit the Find button to generate the results.

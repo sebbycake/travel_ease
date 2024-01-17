@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react"
-import Head from 'next/head'
+import MetaHeader from "@/components/ui/MetaHeader/MetaHeader"
 import {
   Stack,
   Grid,
@@ -22,7 +22,7 @@ export default function Results() {
   const [data, setData] = useState({} as Results)
 
   function extractParametersFromUrl() {
-    return new URLSearchParams(window.location.search).toString();
+    return new URLSearchParams(window.location.search).toString()
   }
 
   useEffect(() => {
@@ -34,12 +34,12 @@ export default function Results() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          addresses: extractParametersFromUrl()
+          addresses: extractParametersFromUrl() || ""
         }),
       };
       try {
         const response = await fetch(API_ENDPOINT, options)
-        const { data }= await response.json()
+        const { data } = await response.json()
         console.log(data)
         setData(data)
       } catch (e) {
@@ -55,12 +55,7 @@ export default function Results() {
 
   return (
     <>
-      <Head>
-        <title>TravelEase | Results </title>
-        <meta name="description" content="Optimize your stay for your next trip with TravelEase" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
+      <MetaHeader />
       {
         isLoading
           ?

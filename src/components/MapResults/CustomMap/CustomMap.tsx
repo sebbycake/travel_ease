@@ -13,13 +13,6 @@ interface IOwnProps {
   destinations: LatLngLiteral[];
 }
 
-
-const center = {
-  lat: 1.3013,
-  lng: 103.9052
-};
-
-
 function CustomMap({ currentOrigin, destinations }: IOwnProps) {
   const { isLoaded } = useJsApiLoader({
     id: 'google-map-script',
@@ -30,7 +23,11 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
 
   const onLoad = React.useCallback(function callback(map) {
     // This is just an example of getting and using the map instance!!! don't just blindly copy!
-    const bounds = new window.google.maps.LatLngBounds(currentOrigin);
+    const bounds = new window.google.maps.LatLngBounds();
+    const markers = [currentOrigin, ...destinations]
+    for (const marker of markers) {
+      bounds.extend(marker);
+    }
     map.fitBounds(bounds);
     setMap(map)
   }, [])
@@ -46,13 +43,16 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
   return (
     <GoogleMap
       mapContainerStyle={containerStyle}
-      center={center}
+      center={currentOrigin}
       zoom={5}
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      <Marker position={currentOrigin} />
-      { destinations.map((dest, i) => <Marker key={i} position={dest} /> )}
+      <Marker 
+        position={currentOrigin}
+        icon={"/home.png"}
+      />
+      {destinations.map((dest, i) => <Marker key={i} position={dest} icon={"landscape.png"}/>)}
     </GoogleMap>
   )
 

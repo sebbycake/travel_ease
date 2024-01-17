@@ -1,15 +1,10 @@
 import type { NextApiRequest, NextApiResponse } from 'next'
 import {
-  Client,
-  DistanceMatrixRequest,
   DistanceMatrixRow,
-  UnitSystem,
-  TravelMode,
-  TransitMode,
-  GeocodeRequest,
   LatLngLiteral,
 }
-from "@googlemaps/google-maps-services-js"
+  from "@googlemaps/google-maps-services-js"
+import { MapService } from '@/services/MapService';
 
 // [origin, averageDistance, averageDuration]
 export type DistanceRankingResult = [string, LatLngLiteral, number, number];
@@ -27,7 +22,7 @@ type Data = {
 const AMPERSAND_SIGN = '&'
 const EQUAL_SIGN = '='
 const PIPE_SIGN = '|'
-const client = new Client({});
+const mapService = new MapService()
 
 function getValues(splittedQueryString: string) {
   const splitArr = splittedQueryString.split(AMPERSAND_SIGN)
@@ -55,20 +50,18 @@ function findAverageDistanceAndDuration(distanceMatrixRow: DistanceMatrixRow) {
     totalDistance += destination.distance.value
     totalDuration += destination.duration.value
   }
-  const avgDistance = totalDistance / destinations.length
+  const avgDistance = (totalDistance / 1000) / destinations.length
   const avgDuration = totalDuration / destinations.length
   return [avgDistance, avgDuration]
 }
 
-async function getGeocodeLocation(address: string): Promise<LatLngLiteral> {
-  const params_: GeocodeRequest = {
-    params: {
-      address: address,
-      key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    }
+async function convertAddressesToGeocode(destinations: string[]) {
+  const destination_addresses_geocode = []
+  for (const dest of destinations) {
+    const destGeoCode = await mapService.getGeocodeLocation(dest)
+    destination_addresses_geocode.push(destGeoCode)
   }
-  const response = await client.geocode(params_)
-  return response.data.results[0].geometry.location
+  return destination_addresses_geocode
 }
 
 export default async function handler(
@@ -76,52 +69,39 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
 
-  // const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
-  // console.log(req.body)
-  const [src, dest] = getOriginsAndDestinations(req.body.addresses)
+  const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
+  // console.log(req.body.addresses)
+  const [src, dest] = getOriginsAndDestinations(query)
 
   console.log(src)
   console.log(dest)
 
-  const params_: DistanceMatrixRequest = {
-    params: {
-      origins: [src],
-      destinations: [dest],
-      units: UnitSystem.metric,
-      mode: TravelMode.transit,
-      transit_mode: [TransitMode.train, TransitMode.bus],
-      key: process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY || "",
-    }
-  }
-
   const results: DistanceRankingResult[] = []
 
   try {
-    const response = await client.distancematrix(params_)
+    const response = await mapService.getDistanceMatrix(src, dest)
+    console.log(response)
     const data = response.data
     const originAddresses = data.origin_addresses
     const origins = data.rows
     for (let i = 0; i < origins.length; i++) {
       const [avgDistance, avgDuration] = findAverageDistanceAndDuration(origins[i])
-      results.push([originAddresses[i], await getGeocodeLocation(originAddresses[i]), avgDistance, avgDuration])
+      results.push(
+        [originAddresses[i],
+        await mapService.getGeocodeLocation(originAddresses[i]),
+          avgDistance,
+          avgDuration]
+      )
     }
     results.sort((placeA, placeB) => placeA[2] - placeB[2])
 
-    const destination_addresses_geocode = []
-    for (const dest of data.destination_addresses) {
-      const destGeoCode = await getGeocodeLocation(dest)
-      destination_addresses_geocode.push(destGeoCode)
-    }
-
-    console.log(results)
-    console.log(destination_addresses_geocode)
-
     res.status(200).json({
-      data: { 
+      data: {
         ranking: results,
-        destination_geocode: destination_addresses_geocode
+        destination_geocode: await convertAddressesToGeocode(data.destination_addresses)
       }
     })
+    
   } catch (e: any) {
     res.status(400).json({ error: e.response.data.error_message })
   }

@@ -8,7 +8,6 @@ import {
   Divider,
 }
   from '@chakra-ui/react'
-import Button from '@/components/ui/Button/Button'
 import Form from '@/components/Form/Form'
 
 export default function Find() {
@@ -39,8 +38,6 @@ export default function Find() {
             </Text>
             <Divider />
             <Form />
-            <Divider />
-            <Button label="Find" href="" />
           </Stack>
         </div>
       </Layout>

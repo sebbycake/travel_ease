@@ -24,7 +24,7 @@ export default function Home() {
           <div className={styles.description}>
             <p className={styles.tagline}>Find Stays Close to Your Itinerary</p>
             <p className={styles.explanation}>
-              We help you choose accommodations close to the attractions you plan
+              We help you rank accommodations close to the attractions you plan
               to visit so that you can optimize your stay for your next trip.
             </p>
             <Button label="Get Started" href={'/find'} />

@@ -6,9 +6,10 @@ import {
   Radio,
   RadioGroup,
   Tooltip,
-  FormLabel
+  FormLabel,
+  Box
 }
-from '@chakra-ui/react'
+  from '@chakra-ui/react'
 
 type SearchParamsType = {
   s1: string; s2: string; s3: string; s4: string; s5: string;
@@ -39,6 +40,12 @@ export default function Form(): JSX.Element {
 
     setSearchParams(initialParams as SearchParamsType);
   }, [])
+
+  function redirect() {
+    const url = new URLSearchParams(window.location.search);
+    const redirectURL = `/results?${url.toString()}`
+    window.location.href = redirectURL
+  }
 
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, key: string) => {
@@ -97,7 +104,26 @@ export default function Form(): JSX.Element {
       </Stack>
     </SimpleGrid>
 
-    <RadioGroup colorScheme='green'>
+    <Box
+      as='button'
+      height='40px'
+      lineHeight='1.2'
+      transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
+      border='1px'
+      px='8px'
+      borderRadius='6px'
+      fontSize='16px'
+      fontWeight='semibold'
+      bg='#00BFA6'
+      color='white'
+      // _hover={{ bg: '#ebedf0' }}
+      onClick={redirect}
+    >
+      Find
+    </Box>
+
+
+    {/* <RadioGroup colorScheme='green'>
       <FormLabel as='legend'>
         Mode of Transport
       </FormLabel>
@@ -106,6 +132,6 @@ export default function Form(): JSX.Element {
         <Radio value='private_car_taxi'>Private car or taxi</Radio>
         <Radio value='biking'>Biking</Radio>
       </Stack>
-    </RadioGroup>
+    </RadioGroup> */}
   </>
 }

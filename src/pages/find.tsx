@@ -26,7 +26,7 @@ export default function Find() {
               tailored to your chosen mode of transport.
               Make informed decisions and enjoy a more convenient journey with TravelEase.
             </Text>
-            <Text>``
+            <Text>
               To start, copy the names or addresses of your accommodations and places of attractions
               you have researched below.
               Then, hit the Find button to generate the results.

@@ -47,12 +47,13 @@ function findAverageDistanceAndDuration(distanceMatrixRow: DistanceMatrixRow) {
   let totalDuration = 0
   const destinations = distanceMatrixRow.elements
   for (const destination of destinations) {
+    console.log(destination)
     totalDistance += destination.distance.value
     totalDuration += destination.duration.value
   }
   const avgDistance = (totalDistance / 1000) / destinations.length
   const avgDuration = totalDuration / destinations.length
-  return [avgDistance, avgDuration]
+  return [parseFloat(avgDistance.toFixed(2)), parseFloat(avgDuration.toFixed(2))]
 }
 
 async function convertAddressesToGeocode(destinations: string[]) {
@@ -69,9 +70,8 @@ export default async function handler(
   res: NextApiResponse<Data>
 ) {
 
-  const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
-  // console.log(req.body.addresses)
-  const [src, dest] = getOriginsAndDestinations(query)
+  // const query = "s1=Parkway+Parade&s2=Tampines+Mall&s3=&s4=&s5=&s6=&s7=&s8=&s9=&s10=&d1=Little+India+MRT+Station&d2=PLQ+Mall&d3=&d4=&d5=&d6=&d7=&d8=&d9=&d10="
+  const [src, dest] = getOriginsAndDestinations(req.body.addresses)
 
   console.log(src)
   console.log(dest)
@@ -80,8 +80,8 @@ export default async function handler(
 
   try {
     const response = await mapService.getDistanceMatrix(src, dest)
-    console.log(response)
     const data = response.data
+    console.log(data)
     const originAddresses = data.origin_addresses
     const origins = data.rows
     for (let i = 0; i < origins.length; i++) {
@@ -103,7 +103,14 @@ export default async function handler(
     })
     
   } catch (e: any) {
-    res.status(400).json({ error: e.response.data.error_message })
+    // res.status(400).json({ error: e.response.data.error_message })
+    // res.status().json({ error: e })
+    res.status(200).json({
+      data: {
+        ranking: [],
+        destination_geocode: []
+      }
+    })
   }
 
 }

@@ -6,6 +6,7 @@ import { Flex } from '@chakra-ui/react'
 interface DistanceResult {
   data: DistanceRankingResult;
   rank: number;
+  activeCard: number;
   handleClick: (rank: number) => void;
 }
 
@@ -16,9 +17,13 @@ const FIRST = 0;
 const SECOND = 1;
 const THIRD = 2;
 
-export default function OriginCard({ data, rank, handleClick }: DistanceResult) {
+export default function OriginCard({ data, rank, activeCard, handleClick }: DistanceResult) {
   return <div>
-    <Card size={'md'} cursor={'pointer'} onClick={() => handleClick(rank)}>
+    <Card 
+      size={'md'} 
+      cursor={'pointer'} 
+      variant={ rank === activeCard ? 'filled' : 'elevated'}
+      onClick={() => handleClick(rank)}>
       <CardHeader>
         <Flex gap={2} alignItems={'center'}>
           {rank === FIRST && <StarIcon w={9} h={9} color='#FFD700' />}

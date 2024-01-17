@@ -19,7 +19,10 @@ export default function Results() {
   const [isLoading, setIsLoading] = useState(true)
   const [isError, setIsError] = useState(false)
   const [activeCard, setActiveCard] = useState(0)
-  const [data, setData] = useState({} as Results)
+  const [data, setData] = useState({
+    ranking: [],
+    destination_geocode: []
+  })
 
   function extractParametersFromUrl() {
     return new URLSearchParams(window.location.search).toString()
@@ -40,8 +43,9 @@ export default function Results() {
       try {
         const response = await fetch(API_ENDPOINT, options)
         const { data } = await response.json()
-        console.log(data)
-        setData(data)
+        if (data !== undefined) {
+          setData(data)
+        }
       } catch (e) {
         setIsError(true)
       } finally {
@@ -70,14 +74,15 @@ export default function Results() {
             <Grid
               h='100vh'
               templateColumns='1fr 3fr'
-              gap={2}
             >
-              <Stack gap={2} overflow={'scroll'}>
+              <Stack gap={3} overflow={'scroll'}>
                 {data.ranking.map((place, i) =>
-                  <OriginCard key={i} data={place} rank={i} handleClick={setActiveCard} />
+                  <OriginCard key={i} data={place} rank={i} activeCard={activeCard} handleClick={setActiveCard} />
                 )}
               </Stack>
-              <CustomMap currentOrigin={data.ranking[activeCard][ORIGIN_GEOCODE]} destinations={data.destination_geocode} />
+              {
+                data.ranking.length > 0 && <CustomMap currentOrigin={data.ranking[activeCard][ORIGIN_GEOCODE]} destinations={data.destination_geocode} />
+              }
             </Grid >
       }
 

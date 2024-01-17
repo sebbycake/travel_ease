@@ -1,22 +1,45 @@
+import { useState, useEffect } from "react"
 import Head from 'next/head'
 import {
   Stack,
-  Grid
+  Grid,
+  Spinner
 }
   from '@chakra-ui/react'
 import OriginCard from '@/components/MapResults/OriginCard/OriginCard'
-import { DistanceRankingResult } from './api/distance'
 import CustomMap from '@/components/MapResults/CustomMap/CustomMap'
 
-const data: DistanceRankingResult[] = [
-  ["Parkway Parade", 1, 0],
-  ["Little India", 1, 0],
-  ["Tampines Mall", 1, 0],
-  ["Punggol St 44", 1, 0],
-  ["PLQ Mall", 1, 0],
-]
-
 export default function Results() {
+
+  const [isLoading, setIsLoading] = useState(true)
+  const [activeCard, setActiveCard] = useState(0)
+  const [rankingData, setRankingData] = useState([])
+  const [destinations, setDestinations] = useState([])
+
+  useEffect(() => {
+
+    async function fetchData() {
+      const options = {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          addresses: new URLSearchParams(window.location.search).toString(),
+        }),
+      };
+      const response = await fetch('api/distance', options)
+      const data = await response.json()
+      console.log(data)
+      setRankingData(data.data.ranking)
+      setDestinations(data.data.destination_geocode)
+      setIsLoading(false)
+    }
+
+    fetchData()
+
+  }, [])
+
   return (
     <>
       <Head>
@@ -30,10 +53,18 @@ export default function Results() {
         templateColumns='1fr 3fr'
         gap={2}
       >
-        <Stack gap={2}>
-          {data.map((d, i) => <OriginCard key={i} data={d} rank={i} />)}
-        </Stack>
-        <CustomMap />
+        {
+          isLoading
+            ? <Spinner />
+            : (
+              <>
+                <Stack gap={2} overflow={'scroll'}>
+                  {rankingData.map((d, i) => <OriginCard key={i} data={d} rank={i} handleClick={setActiveCard} />)}
+                </Stack>
+                <CustomMap currentOrigin={rankingData[activeCard][1]} destinations={destinations} />
+              </>
+            )
+        }
       </Grid>
     </>
   )

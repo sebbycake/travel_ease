@@ -3,13 +3,12 @@ import MetaHeader from "@/components/ui/MetaHeader/MetaHeader"
 import {
   Stack,
   Grid,
-  Spinner,
-  Flex
 }
   from '@chakra-ui/react'
 import OriginCard from '@/components/MapResults/OriginCard/OriginCard'
 import CustomMap from '@/components/MapResults/CustomMap/CustomMap'
 import { Results } from "./api/distance"
+import MapSkeleton from "@/components/MapResults/MapSkeleton/MapSkeleton"
 
 const API_ENDPOINT = '/api/distance'
 const ORIGIN_GEOCODE = 1
@@ -63,9 +62,7 @@ export default function Results() {
       {
         isLoading
           ?
-          <Flex height={'100vh'} justifyContent={'center'} alignItems={'center'}>
-            <Spinner color="#00BFA6" size={'xl'} emptyColor='gray.200' thickness='3px' speed='0.7s' />
-          </Flex>
+          <MapSkeleton />
           :
           isError
             ?

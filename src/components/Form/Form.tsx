@@ -7,7 +7,8 @@ import {
   RadioGroup,
   Tooltip,
   FormLabel,
-  Box
+  Box,
+  Button,
 }
   from '@chakra-ui/react'
 
@@ -26,6 +27,7 @@ export default function Form(): JSX.Element {
     d1: "", d2: "", d3: "", d4: "", d5: "",
     d6: "", d7: "", d8: "", d9: "", d10: ""
   })
+  const [isLoading, setIsLoading] = useState(false)
   const SRC_KEYS: Array<keyof typeof searchParams> = ["s1", "s2", "s3", "s4", "s5", "s6", "s7", "s8", "s9", "s10"]
   const DEST_KEYS: Array<keyof typeof searchParams> = ["d1", "d2", "d3", "d4", "d5", "d6", "d7", "d8", "d9", "d10"]
 
@@ -42,11 +44,11 @@ export default function Form(): JSX.Element {
   }, [])
 
   function redirect() {
+    setIsLoading(true)
     const url = new URLSearchParams(window.location.search);
     const redirectURL = `/results?${url.toString()}`
     window.location.href = redirectURL
   }
-
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, key: string) => {
     setSearchParams(prev => {
@@ -57,6 +59,10 @@ export default function Form(): JSX.Element {
       return updatedParams
     })
   };
+
+  function isDisabled() {
+    return searchParams.s1 === "" || searchParams.d1 === ""
+  }
 
   return <>
     <SimpleGrid columns={2} spacing={4}>
@@ -76,7 +82,7 @@ export default function Form(): JSX.Element {
             isRequired={index === 0}
             placeholder={`Enter location of source ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
             value={searchParams[key]}
-            focusBorderColor='black'
+            focusBorderColor='#CBD5E0'
             onChange={(event) => handleChange(event, key)}
           />)
         }
@@ -97,31 +103,21 @@ export default function Form(): JSX.Element {
             isRequired={index === 0}
             placeholder={`Enter location of destination ${index + 1} ${index > 0 ? '(Optional)' : ''}`}
             value={searchParams[key]}
-            focusBorderColor='black'
+            focusBorderColor='#CBD5E0'
             onChange={(event) => handleChange(event, key)}
           />)
         }
       </Stack>
     </SimpleGrid>
 
-    <Box
-      as='button'
-      height='40px'
-      lineHeight='1.2'
-      transition='all 0.2s cubic-bezier(.08,.52,.52,1)'
-      border='1px'
-      px='8px'
-      borderRadius='6px'
-      fontSize='16px'
-      fontWeight='semibold'
-      bg='#00BFA6'
-      color='white'
-      // _hover={{ bg: '#ebedf0' }}
-      onClick={redirect}
+    <Button 
+      colorScheme='teal'
+      isLoading={isLoading}
+      isDisabled={isDisabled()}
+      onClick={redirect} 
     >
       Find
-    </Box>
-
+    </Button>
 
     {/* <RadioGroup colorScheme='green'>
       <FormLabel as='legend'>

@@ -9,7 +9,8 @@ import OriginCard from '@/components/MapResults/OriginCard/OriginCard'
 import CustomMap from '@/components/MapResults/CustomMap/CustomMap'
 import { Results } from "./api/distance"
 import MapSkeleton from "@/components/MapResults/MapSkeleton/MapSkeleton"
-import ErrorBanner from "@/components/MapResults/ErrorBanner/ErrorBanner"
+import AlertBanner from "@/components/MapResults/AlertBanner/AlertBanner"
+import { getUrlSearchParams } from "@/utils/utils"
 
 enum Status {
   LOADING = "loading",
@@ -31,10 +32,6 @@ export default function Results() {
     destination_geocode: []
   })
 
-  function extractParametersFromUrl() {
-    return new URLSearchParams(window.location.search).toString()
-  }
-
   useEffect(() => {
 
     async function fetchData() {
@@ -44,7 +41,7 @@ export default function Results() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          addresses: extractParametersFromUrl() || ""
+          addresses: getUrlSearchParams() || ""
         }),
       };
       try {
@@ -71,9 +68,9 @@ export default function Results() {
 
       { status === Status.LOADING && <MapSkeleton /> }
 
-      { status === Status.ERROR && <ErrorBanner message={ERR_MSG} /> }
+      { status === Status.ERROR && <AlertBanner message={ERR_MSG} /> }
 
-      { status === Status.EMPTY_RESULTS && <ErrorBanner message={EMPTY_RESULTS_MSG} /> }
+      { status === Status.EMPTY_RESULTS && <AlertBanner message={EMPTY_RESULTS_MSG} /> }
 
       {
         status === Status.SUCCESSFUL && 

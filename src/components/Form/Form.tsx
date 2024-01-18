@@ -10,6 +10,8 @@ import {
   Button,
 }
   from '@chakra-ui/react'
+import { PATHS } from '@/constants';
+import { getUrlSearchParams } from '@/utils/utils';
 
 type SearchParamsType = {
   s1: string; s2: string; s3: string; s4: string; s5: string;
@@ -44,9 +46,7 @@ export default function Form(): JSX.Element {
 
   function redirect() {
     setIsLoading(true)
-    const url = new URLSearchParams(window.location.search);
-    const redirectURL = `/results?${url.toString()}`
-    window.location.href = redirectURL
+    window.location.href = `${PATHS.results}?${getUrlSearchParams()}`
   }
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>, key: string) => {

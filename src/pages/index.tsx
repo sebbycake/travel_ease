@@ -2,6 +2,7 @@ import MetaHeader from "@/components/ui/MetaHeader/MetaHeader"
 import styles from "../styles/Home.module.css"
 import Button from '@/components/ui/Button/Button'
 import Layout from '@/components/Layout/Layout'
+import { PATHS } from "@/constants"
 
 export default function Home() {
   return (
@@ -9,14 +10,13 @@ export default function Home() {
       <MetaHeader />
       <Layout>
         <div className={styles.container}>
-
           <div className={styles.description}>
             <p className={styles.tagline}>Find Stays Close to Your Itinerary</p>
             <p className={styles.explanation}>
               We help you rank accommodations close to the attractions you plan
               to visit so that you can optimize your stay for your next trip.
             </p>
-            <Button label="Get Started" href={'/find'} />
+            <Button label="Get Started" href={PATHS.find} />
           </div>
 
           <div className={styles.image_container}>

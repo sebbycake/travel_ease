@@ -7,7 +7,6 @@ import {
   RadioGroup,
   Tooltip,
   FormLabel,
-  Box,
   Button,
 }
   from '@chakra-ui/react'

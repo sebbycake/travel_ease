@@ -1,6 +1,6 @@
 import { useState, useCallback, memo } from "react"
 import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
-import { Spinner } from "@chakra-ui/react";
+import { Flex, Spinner } from "@chakra-ui/react";
 import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
 
 const containerStyle = {
@@ -31,33 +31,33 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
     }
     map.fitBounds(bounds);
     setMap(map)
-    await calculateRoute()
+    // await calculateRoute()
   }, [])
 
-  async function calculateRoute() {
-    const directionsService = new google.maps.DirectionsService()
-    const res = []
-    for (const dest of destinations) {
-      const results = await directionsService.route({
-        origin: currentOrigin,
-        destination: dest,
-        travelMode: google.maps.TravelMode.DRIVING
-      })
-      res.push(results)
-    }
-    setDirectionsResponse(res)
-  }
-
-  function clearRoute() {
-    setDirectionsResponse([])
-  }
+  // async function calculateRoute() {
+  //   const directionsService = new google.maps.DirectionsService()
+  //   const res = []
+  //   for (const dest of destinations) {
+  //     const results = await directionsService.route({
+  //       origin: currentOrigin,
+  //       destination: dest,
+  //       travelMode: google.maps.TravelMode.DRIVING
+  //     })
+  //     res.push(results)
+  //   }
+  //   setDirectionsResponse(res)
+  // }
 
   const onUnmount = useCallback(function callback(map) {
     setMap(null)
   }, [])
 
   if (!isLoaded) {
-    return <Spinner />
+    return (
+      <Flex height={'100vh'} justifyContent={'center'} alignItems={'center'}>
+        <Spinner color="#00BFA6" size={'xl'} emptyColor='gray.200' thickness='3px' speed='0.7s' />
+      </Flex>
+    )
   }
 
   return (
@@ -67,14 +67,27 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
       zoom={5}
       onLoad={onLoad}
       onUnmount={onUnmount}
+      // onCenterChanged={calculateRoute} causes infinite re-renders
     >
-      <Marker
+      {<Marker
         position={currentOrigin}
         icon={"/home.png"}
-      />
+      /> }
       {destinations.map((dest, i) => <Marker key={i} position={dest} icon={"landscape.png"} />)}
-      {/* {directionsResponse && 
-        directionsResponse.map(resp => <DirectionsRenderer directions={resp} />)
+      {/* {
+        directionsResponse &&
+          directionsResponse.map(resp => 
+          <DirectionsRenderer 
+            directions={resp} 
+            options={{
+            polylineOptions: {
+              strokeColor: "#000000",
+              strokeOpacity: 0.5,
+              strokeWeight: 7
+            },
+            markerOptions: { icon: "/landscape.png", zIndex: -100 },
+            }} 
+          />)
       } */}
     </GoogleMap>
   )

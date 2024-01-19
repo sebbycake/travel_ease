@@ -34,13 +34,10 @@ export default function Form(): JSX.Element {
 
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-
     const initialParams: Partial<SearchParamsType> = {}
-
     SRC_KEYS.concat(DEST_KEYS).forEach((val) => {
       initialParams[val as keyof SearchParamsType] = queryParams.get(val) || ''
     })
-
     setSearchParams(initialParams as SearchParamsType);
   }, [])
 
@@ -108,7 +105,7 @@ export default function Form(): JSX.Element {
         }
       </Stack>
     </SimpleGrid>
-
+    
     <Button 
       colorScheme='teal'
       isLoading={isLoading}

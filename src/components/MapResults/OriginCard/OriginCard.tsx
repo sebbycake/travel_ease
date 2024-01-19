@@ -33,8 +33,8 @@ export default function OriginCard({ data, rank, activeCard, handleClick }: Dist
         </Flex>
       </CardHeader>
       <CardBody>
-        <Text>Average Distance: {data[DISTANCE]} km </Text>
-        <Text>Average Duration: {data[DURATION] } minutes </Text>
+        <Text>Average distance: {data[DISTANCE]} km </Text>
+        {/* <Text>Average duration: {data[DURATION] } minutes </Text> */}
       </CardBody>
     </Card>
   </div>

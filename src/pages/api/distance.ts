@@ -8,9 +8,16 @@ import { MapService } from '@/services/MapService';
 
 // [origin, averageDistance, averageDuration]
 export type DistanceRankingResult = [string, LatLngLiteral, number, number];
+
+export type DestinationResult = {
+  name: string;
+  address: string;
+  position: LatLngLiteral;
+}
+
 export interface Results {
   ranking: DistanceRankingResult[];
-  destination_geocode: LatLngLiteral[];
+  destination_geocode: DestinationResult[];
 }
 
 type Data = {
@@ -34,7 +41,7 @@ function getValues(splittedQueryString: string) {
       arr.push(decodeURIComponent(value.replace(/\+/g, ' ')))
     }
   }
-  return arr.join(PIPE_SIGN)
+  return arr
 }
 
 function getOriginsAndDestinations(queryString: string) {
@@ -56,15 +63,6 @@ function findAverageDistanceAndDuration(distanceMatrixRow: DistanceMatrixRow) {
   return [parseFloat(avgDistance.toFixed(2)), parseFloat(avgDuration.toFixed(2))]
 }
 
-async function convertAddressesToGeocode(destinations: string[]) {
-  const destination_addresses_geocode = []
-  for (const dest of destinations) {
-    const destGeoCode = await mapService.getGeocodeLocation(dest)
-    destination_addresses_geocode.push(destGeoCode)
-  }
-  return destination_addresses_geocode
-}
-
 export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
@@ -79,7 +77,7 @@ export default async function handler(
   const results: DistanceRankingResult[] = []
 
   try {
-    const response = await mapService.getDistanceMatrix(src, dest)
+    const response = await mapService.getDistanceMatrix(src.join(PIPE_SIGN), dest.join(PIPE_SIGN))
     const data = response.data
     console.log(data)
     const originAddresses = data.origin_addresses
@@ -87,7 +85,7 @@ export default async function handler(
     for (let i = 0; i < origins.length; i++) {
       const [avgDistance, avgDuration] = findAverageDistanceAndDuration(origins[i])
       results.push(
-        [originAddresses[i],
+        [src[i],
         await mapService.getGeocodeLocation(originAddresses[i]),
           avgDistance,
           avgDuration]
@@ -95,10 +93,21 @@ export default async function handler(
     }
     results.sort((placeA, placeB) => placeA[2] - placeB[2])
 
+    const destinationResults: DestinationResult[] = []
+
+    for (let i = 0; i < dest.length; i++) {
+      const destGeoCode = await mapService.getGeocodeLocation(dest[i])
+      destinationResults.push({
+        name: dest[i],
+        address: data.destination_addresses[i],
+        position: destGeoCode
+      })
+    }
+
     res.status(200).json({
       data: {
         ranking: results,
-        destination_geocode: await convertAddressesToGeocode(data.destination_addresses)
+        destination_geocode: destinationResults
       }
     })
     

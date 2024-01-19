@@ -1,8 +1,9 @@
 import { useState, useCallback, memo } from "react"
 import { GoogleMap, Marker, useJsApiLoader, InfoWindow } from '@react-google-maps/api';
-import { Flex, Spinner } from "@chakra-ui/react";
+import { Flex, Heading, Spinner, Stack, Text } from "@chakra-ui/react";
 import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
 import Link from "next/link";
+import { DestinationResult } from "@/pages/api/distance";
 
 const containerStyle = {
   width: '100%',
@@ -11,7 +12,7 @@ const containerStyle = {
 
 interface IOwnProps {
   currentOrigin: LatLngLiteral;
-  destinations: LatLngLiteral[];
+  destinations: DestinationResult[];
 }
 
 function CustomMap({ currentOrigin, destinations }: IOwnProps) {
@@ -21,13 +22,13 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
   })
 
   const [map, setMap] = useState(null)
-  const [selectedMarker, setSelectedMarker] = useState<LatLngLiteral>()
+  const [selectedMarker, setSelectedMarker] = useState<DestinationResult>()
 
   const onLoad = useCallback(async function callback(map) {
     const bounds = new window.google.maps.LatLngBounds();
-    const markers = [currentOrigin, ...destinations]
-    for (const marker of markers) {
-      bounds.extend(marker);
+    bounds.extend(currentOrigin)
+    for (const dest of destinations) {
+      bounds.extend(dest.position);
     }
     map.fitBounds(bounds);
     setMap(map)
@@ -63,7 +64,7 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
         destinations.map((dest, index) =>
           <Marker
             key={index}
-            position={dest}
+            position={dest.position}
             icon={"/pin.png"}
             onClick={() => setSelectedMarker(dest)}
           />)
@@ -72,17 +73,21 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
       {
         selectedMarker &&
         <InfoWindow
-          position={selectedMarker}
+          position={selectedMarker.position}
           onCloseClick={() => setSelectedMarker(undefined)}
           onUnmount={() => setSelectedMarker(undefined)}
         >
-          <Link
-            href={generateGoogleMapsDirectionUrl(selectedMarker)}
-            target="_blank"
-            style={{ textDecoration: "underline" }}
-          >
-            View directions
-          </Link>
+          <Stack>
+            <Heading size='xs'>{selectedMarker.name}</Heading>
+            <Text fontSize='sm'>{selectedMarker.address}</Text>
+            <Link
+              href={generateGoogleMapsDirectionUrl(selectedMarker.position)}
+              target="_blank"
+              style={{ textDecoration: "underline" }}
+            >
+              View directions
+            </Link>
+          </Stack>
         </InfoWindow>
       }
 

@@ -1,7 +1,8 @@
 import { useState, useCallback, memo } from "react"
-import { GoogleMap, Marker, useJsApiLoader, DirectionsRenderer } from '@react-google-maps/api';
+import { GoogleMap, Marker, useJsApiLoader, InfoWindow } from '@react-google-maps/api';
 import { Flex, Spinner } from "@chakra-ui/react";
 import { LatLngLiteral } from "@googlemaps/google-maps-services-js";
+import Link from "next/link";
 
 const containerStyle = {
   width: '100%',
@@ -20,10 +21,9 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
   })
 
   const [map, setMap] = useState(null)
-  const [directionsResponse, setDirectionsResponse] = useState([])
+  const [selectedMarker, setSelectedMarker] = useState<LatLngLiteral>()
 
   const onLoad = useCallback(async function callback(map) {
-    // This is just an example of getting and using the map instance!!! don't just blindly copy!
     const bounds = new window.google.maps.LatLngBounds();
     const markers = [currentOrigin, ...destinations]
     for (const marker of markers) {
@@ -31,26 +31,16 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
     }
     map.fitBounds(bounds);
     setMap(map)
-    // await calculateRoute()
   }, [])
-
-  // async function calculateRoute() {
-  //   const directionsService = new google.maps.DirectionsService()
-  //   const res = []
-  //   for (const dest of destinations) {
-  //     const results = await directionsService.route({
-  //       origin: currentOrigin,
-  //       destination: dest,
-  //       travelMode: google.maps.TravelMode.DRIVING
-  //     })
-  //     res.push(results)
-  //   }
-  //   setDirectionsResponse(res)
-  // }
 
   const onUnmount = useCallback(function callback(map) {
     setMap(null)
   }, [])
+
+  function generateGoogleMapsDirectionUrl(dest: LatLngLiteral) {
+    const link = `https://www.google.com/maps/dir/?api=1&origin=${currentOrigin.lat},${currentOrigin.lng}&destination=${dest.lat},${dest.lng}&travelmode=transit`
+    return link
+  }
 
   if (!isLoaded) {
     return (
@@ -67,28 +57,37 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
       zoom={5}
       onLoad={onLoad}
       onUnmount={onUnmount}
-      // onCenterChanged={calculateRoute} causes infinite re-renders
     >
       {<Marker
         position={currentOrigin}
         icon={"/home.png"}
-      /> }
-      {destinations.map((dest, i) => <Marker key={i} position={dest} icon={"landscape.png"} />)}
-      {/* {
-        directionsResponse &&
-          directionsResponse.map(resp => 
-          <DirectionsRenderer 
-            directions={resp} 
-            options={{
-            polylineOptions: {
-              strokeColor: "#000000",
-              strokeOpacity: 0.5,
-              strokeWeight: 7
-            },
-            markerOptions: { icon: "/landscape.png", zIndex: -100 },
-            }} 
-          />)
-      } */}
+      />}
+
+      {destinations.map((dest, i) =>
+        <Marker
+          key={i}
+          position={dest}
+          icon={"landscape.png"}
+          onClick={() => setSelectedMarker(dest)}
+        />)}
+
+      {
+        selectedMarker &&
+        <InfoWindow
+          position={selectedMarker}
+          onCloseClick={() => setSelectedMarker(undefined)}
+          onUnmount={() => setSelectedMarker(undefined)}
+        >
+          <Link
+            href={generateGoogleMapsDirectionUrl(selectedMarker)}
+            target="_blank"
+            style={{ textDecoration: "underline" }}
+          >
+            View routes here
+          </Link>
+        </InfoWindow>
+      }
+
     </GoogleMap>
   )
 

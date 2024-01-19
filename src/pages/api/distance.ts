@@ -31,7 +31,7 @@ function getValues(splittedQueryString: string) {
     const idx = splitVal.indexOf(EQUAL_SIGN)
     const value = splitVal.slice(idx + 1)
     if (value !== "") {
-      arr.push(value)
+      arr.push(decodeURIComponent(value.replace(/\+/g, ' ')))
     }
   }
   return arr.join(PIPE_SIGN)
@@ -103,8 +103,6 @@ export default async function handler(
     })
     
   } catch (e: any) {
-    // res.status(400).json({ error: e.response.data.error_message })
-    // res.status().json({ error: e })
     res.status(200).json({
       data: {
         ranking: [],

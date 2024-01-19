@@ -6,8 +6,13 @@ import {
   from "@googlemaps/google-maps-services-js"
 import { MapService } from '@/services/MapService';
 
-// [origin, averageDistance, averageDuration]
-export type DistanceRankingResult = [string, LatLngLiteral, number, number];
+export type DistanceRankingResult = {
+  name: string;
+  address: string;
+  position: LatLngLiteral;
+  avg_distance: number;
+  avg_duration: number;
+}
 
 export type DestinationResult = {
   name: string;
@@ -29,6 +34,8 @@ type Data = {
 const AMPERSAND_SIGN = '&'
 const EQUAL_SIGN = '='
 const PIPE_SIGN = '|'
+const ONE_KM = 1000;
+const ONE_HOUR = 60;
 const mapService = new MapService()
 
 function getValues(splittedQueryString: string) {
@@ -58,9 +65,17 @@ function findAverageDistanceAndDuration(distanceMatrixRow: DistanceMatrixRow) {
     totalDistance += destination.distance.value
     totalDuration += destination.duration.value
   }
-  const avgDistance = (totalDistance / 1000) / destinations.length
-  const avgDuration = totalDuration / destinations.length
-  return [parseFloat(avgDistance.toFixed(2)), parseFloat(avgDuration.toFixed(2))]
+  const avgDistance = (totalDistance / ONE_KM) / destinations.length
+  const avgDuration = (totalDuration / ONE_HOUR) / destinations.length
+  return [parseFloat(avgDistance.toFixed(2)), parseFloat(avgDuration.toFixed(0))]
+}
+
+const distanceWeight = 0.7; 
+const durationWeight = 0.3;
+function sortCriteria(placeA: DistanceRankingResult, placeB: DistanceRankingResult) {
+  const combinedValueA = placeA.avg_distance * distanceWeight + placeA.avg_duration * durationWeight;
+  const combinedValueB = placeB.avg_distance * distanceWeight + placeB.avg_duration * durationWeight;
+  return combinedValueA - combinedValueB;
 }
 
 export default async function handler(
@@ -84,14 +99,15 @@ export default async function handler(
     const origins = data.rows
     for (let i = 0; i < origins.length; i++) {
       const [avgDistance, avgDuration] = findAverageDistanceAndDuration(origins[i])
-      results.push(
-        [src[i],
-        await mapService.getGeocodeLocation(originAddresses[i]),
-          avgDistance,
-          avgDuration]
-      )
+      results.push({
+        name: src[i],
+        address: originAddresses[i],
+        position: await mapService.getGeocodeLocation(src[i]),
+        avg_distance: avgDistance,
+        avg_duration: avgDuration
+      })
     }
-    results.sort((placeA, placeB) => placeA[2] - placeB[2])
+    results.sort(sortCriteria)
 
     const destinationResults: DestinationResult[] = []
 

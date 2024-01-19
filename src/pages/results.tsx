@@ -5,7 +5,7 @@ import {
   Grid,
 }
   from '@chakra-ui/react'
-import OriginCard from '@/components/MapResults/ResultCard/ResultCard'
+import ResultCard from '@/components/MapResults/ResultCard/ResultCard'
 import CustomMap from '@/components/MapResults/CustomMap/CustomMap'
 import { Results } from "./api/distance"
 import MapSkeleton from "@/components/MapResults/MapSkeleton/MapSkeleton"
@@ -19,7 +19,6 @@ enum Status {
   ERROR = "error",
 }
 const API_ENDPOINT = '/api/distance'
-const ORIGIN_GEOCODE = 1
 const ERR_MSG = "Oops! Something went wrong. Please try again later."
 const EMPTY_RESULTS_MSG = "There are no valid results based on your inputs."
 
@@ -27,7 +26,7 @@ export default function Results() {
 
   const [status, setStatus] = useState<Status>(Status.LOADING)
   const [activeCard, setActiveCard] = useState(0)
-  const [data, setData] = useState({
+  const [data, setData] = useState<Results>({
     ranking: [],
     destination_geocode: []
   })
@@ -80,10 +79,10 @@ export default function Results() {
         >
           <Stack gap={3} overflow={'scroll'}>
             {data.ranking.map((place, i) =>
-              <OriginCard key={i} data={place} rank={i} activeCard={activeCard} handleClick={setActiveCard} />
+              <ResultCard key={i} data={place} rank={i} activeCard={activeCard} handleClick={setActiveCard} />
             )}
           </Stack>
-          <CustomMap currentOrigin={data.ranking[activeCard][ORIGIN_GEOCODE]} destinations={data.destination_geocode} />
+          <CustomMap currentOrigin={data.ranking[activeCard].position} destinations={data.destination_geocode} />
         </Grid >
       }
     </>

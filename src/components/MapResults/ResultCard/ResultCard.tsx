@@ -10,9 +10,7 @@ interface DistanceResult {
   handleClick: (rank: number) => void;
 }
 
-const FIRST = 0;
-const SECOND = 1;
-const THIRD = 2;
+const FIRST = 0, SECOND = 1, THIRD = 2;
 
 export default function ResultCard({ data, rank, activeCard, handleClick }: DistanceResult) {
   return <div>
@@ -21,7 +19,7 @@ export default function ResultCard({ data, rank, activeCard, handleClick }: Dist
       cursor={'pointer'}
       variant={rank === activeCard ? 'filled' : 'elevated'}
       onClick={() => handleClick(rank)}>
-      <CardHeader>
+      <CardHeader marginBottom={"-28px"}>
         <Stack gap={3}>
           <Flex gap={2} alignItems={'center'}>
             {rank === FIRST && <StarIcon w={9} h={9} color='#FFD700' />}
@@ -33,6 +31,7 @@ export default function ResultCard({ data, rank, activeCard, handleClick }: Dist
         </Stack>
       </CardHeader>
       <CardBody>
+        <Text fontSize={'md'} textDecoration={'underline'} fontWeight={'500'}>Statistics</Text>
         <Text>Average distance: {data.avg_distance} km </Text>
         <Text>Average duration: {data.avg_duration} minutes </Text>
       </CardBody>

@@ -70,11 +70,11 @@ function findAverageDistanceAndDuration(distanceMatrixRow: DistanceMatrixRow) {
   return [parseFloat(avgDistance.toFixed(2)), parseFloat(avgDuration.toFixed(0))]
 }
 
-const distanceWeight = 0.7; 
-const durationWeight = 0.3;
-function sortCriteria(placeA: DistanceRankingResult, placeB: DistanceRankingResult) {
-  const combinedValueA = placeA.avg_distance * distanceWeight + placeA.avg_duration * durationWeight;
-  const combinedValueB = placeB.avg_distance * distanceWeight + placeB.avg_duration * durationWeight;
+const DISTANCE_WEIGHT = 0.7; 
+const DURATION_WEIGHT = 0.3;
+function placeComparatorFunction(placeA: DistanceRankingResult, placeB: DistanceRankingResult) {
+  const combinedValueA = placeA.avg_distance * DISTANCE_WEIGHT + placeA.avg_duration * DURATION_WEIGHT;
+  const combinedValueB = placeB.avg_distance * DISTANCE_WEIGHT + placeB.avg_duration * DURATION_WEIGHT;
   return combinedValueA - combinedValueB;
 }
 
@@ -107,7 +107,7 @@ export default async function handler(
         avg_duration: avgDuration
       })
     }
-    results.sort(sortCriteria)
+    results.sort(placeComparatorFunction)
 
     const destinationResults: DestinationResult[] = []
 

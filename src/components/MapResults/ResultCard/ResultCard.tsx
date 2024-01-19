@@ -17,7 +17,7 @@ const FIRST = 0;
 const SECOND = 1;
 const THIRD = 2;
 
-export default function OriginCard({ data, rank, activeCard, handleClick }: DistanceResult) {
+export default function ResultCard({ data, rank, activeCard, handleClick }: DistanceResult) {
   return <div>
     <Card 
       size={'md'} 

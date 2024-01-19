@@ -38,8 +38,7 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
   }, [])
 
   function generateGoogleMapsDirectionUrl(dest: LatLngLiteral) {
-    const link = `https://www.google.com/maps/dir/?api=1&origin=${currentOrigin.lat},${currentOrigin.lng}&destination=${dest.lat},${dest.lng}&travelmode=transit`
-    return link
+    return `https://www.google.com/maps/dir/?api=1&origin=${currentOrigin.lat},${currentOrigin.lng}&destination=${dest.lat},${dest.lng}&travelmode=transit`
   }
 
   if (!isLoaded) {
@@ -58,18 +57,17 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
       onLoad={onLoad}
       onUnmount={onUnmount}
     >
-      {<Marker
-        position={currentOrigin}
-        icon={"/home.png"}
-      />}
+      <Marker position={currentOrigin} icon={"/location.png"} />
 
-      {destinations.map((dest, i) =>
-        <Marker
-          key={i}
-          position={dest}
-          icon={"landscape.png"}
-          onClick={() => setSelectedMarker(dest)}
-        />)}
+      {
+        destinations.map((dest, index) =>
+          <Marker
+            key={index}
+            position={dest}
+            icon={"/pin.png"}
+            onClick={() => setSelectedMarker(dest)}
+          />)
+      }
 
       {
         selectedMarker &&
@@ -83,7 +81,7 @@ function CustomMap({ currentOrigin, destinations }: IOwnProps) {
             target="_blank"
             style={{ textDecoration: "underline" }}
           >
-            View routes here
+            View directions
           </Link>
         </InfoWindow>
       }

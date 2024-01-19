@@ -5,7 +5,7 @@ import {
   Grid,
 }
   from '@chakra-ui/react'
-import OriginCard from '@/components/MapResults/OriginCard/OriginCard'
+import OriginCard from '@/components/MapResults/ResultCard/ResultCard'
 import CustomMap from '@/components/MapResults/CustomMap/CustomMap'
 import { Results } from "./api/distance"
 import MapSkeleton from "@/components/MapResults/MapSkeleton/MapSkeleton"
@@ -56,7 +56,7 @@ export default function Results() {
       } catch (e) {
         setStatus(Status.ERROR)
       }
-    } 
+    }
 
     fetchData()
 
@@ -66,14 +66,14 @@ export default function Results() {
     <>
       <MetaHeader />
 
-      { status === Status.LOADING && <MapSkeleton /> }
+      {status === Status.LOADING && <MapSkeleton />}
 
-      { status === Status.ERROR && <AlertBanner message={ERR_MSG} /> }
+      {status === Status.ERROR && <AlertBanner message={ERR_MSG} />}
 
-      { status === Status.EMPTY_RESULTS && <AlertBanner message={EMPTY_RESULTS_MSG} /> }
+      {status === Status.EMPTY_RESULTS && <AlertBanner message={EMPTY_RESULTS_MSG} />}
 
       {
-        status === Status.SUCCESSFUL && 
+        status === Status.SUCCESSFUL &&
         <Grid
           h='100vh'
           templateColumns='1fr 3fr'
@@ -83,7 +83,7 @@ export default function Results() {
               <OriginCard key={i} data={place} rank={i} activeCard={activeCard} handleClick={setActiveCard} />
             )}
           </Stack>
-            <CustomMap currentOrigin={data.ranking[activeCard][ORIGIN_GEOCODE]} destinations={data.destination_geocode} />
+          <CustomMap currentOrigin={data.ranking[activeCard][ORIGIN_GEOCODE]} destinations={data.destination_geocode} />
         </Grid >
       }
     </>
